@@ -67,10 +67,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\HelperClassManager.cs" />
+    <Compile Include="Helper\Procesr.cs" />
+    <Compile Include="Helper\SwitchData.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Fee.cs" />
     <Compile Include="Models\IsoMessageFieldDefinitions.cs" />
-    <Compile Include="Models\Messages.cs" />
+    <Compile Include="Models\DataMessages.cs" />
     <Compile Include="Models\ProtobufSerializer.cs" />
     <Compile Include="Models\ReponseData.cs" />
     <Compile Include="Models\Route.cs" />
@@ -81,6 +85,14 @@
     <Compile Include="Models\StatusCodes.cs" />
     <Compile Include="Models\SwitchNode.cs" />
     <Compile Include="Models\TransactionType.cs" />
+    <Compile Include="PeerConection\Client.cs" />
+    <Compile Include="PeerConection\EndPoints.cs" />
+    <Compile Include="PeerConection\Listener.cs" />
+    <Compile Include="Processor\ChannelLogic.cs" />
+    <Compile Include="Processor\Processor.cs" />
+    <Compile Include="Processor\RouteLogic.cs" />
+    <Compile Include="Processor\TransactionLogProcessing.cs" />
+    <Compile Include="Processor\TransactionTypeLogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

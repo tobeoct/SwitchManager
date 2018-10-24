@@ -45,20 +45,20 @@ namespace ClientServerApp.Models
 
             return false;
         }
-        public static void DetermineRoute(Messages scheme, List<TransactionTypeChannelFeeCombo> transactionTypeChannelFeeCombos)
-        {
-            if (DetermineFee(scheme.TransactionType, scheme.Channel, transactionTypeChannelFeeCombos))
-            {
-                if (DetermineSinkNode(transactionTypeChannelFeeCombos))
-                {
-                    var sinkNodeIP = curSinkNode.IPAddress.ToString();
-                    var sinkNodePort = curSinkNode.Port.ToString();
-                    var serverInfo = sinkNodeIP + ":" + sinkNodePort;
-                    SendMessageToSinkNode(serverInfo);
-
-                }
-            }
-        }
+//        public static void DetermineRoute(Message scheme, List<TransactionTypeChannelFeeCombo> transactionTypeChannelFeeCombos)
+//        {
+//            if (DetermineFee(scheme.TransactionType, scheme.Channel, transactionTypeChannelFeeCombos))
+//            {
+//                if (DetermineSinkNode(transactionTypeChannelFeeCombos))
+//                {
+//                    var sinkNodeIP = curSinkNode.IPAddress.ToString();
+//                    var sinkNodePort = curSinkNode.Port.ToString();
+//                    var serverInfo = sinkNodeIP + ":" + sinkNodePort;
+//                    SendMessageToSinkNode(serverInfo);
+//
+//                }
+//            }
+//        }
         public static void ConnectToServer(string serverIp, int serverPort, string message)
         {
             //            var nodes = getSourceNodes();
