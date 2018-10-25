@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClientServerApp.Helper;
 using ClientServerApp.Models;
+using SwitchConsole.Models;
 using Trx.Messaging;
 using Trx.Messaging.FlowControl;
 using Trx.Messaging.Iso8583;
@@ -18,9 +19,30 @@ namespace ClientServerApp.Processor
         {
 
         }
+        
         public Iso8583Message ProcessMessage(Iso8583Message message, SourceNode sourceNode)
         {
+            var field41 = message.Fields[41].Value.ToString();
+            var terminalID = field41.Substring(1, field41.Length - 1);
+            string cardBIN = message.Fields[2].Value.ToString().Substring(0, 6);
             Console.WriteLine("Processing ...");
+            if (!terminalID.Equals(IsoMessageFieldDefinitions.TERMINAL_ID.ToString()))
+            {
+                Console.WriteLine("THIS IS A NOT-ON-US TRANSACTION");
+            }
+            else
+            {
+                if (cardBIN.Equals(IsoMessageFieldDefinitions.INSTITUTION_BIN.ToString()))
+                {
+                    
+                    Console.WriteLine("THIS IS AN ON-US TRANSACTION");
+                }
+                else
+                {
+                    Console.WriteLine("THIS IS A REMOTE-ON-US TRANSACTION");
+                }
+                
+            }
             if (message.MessageTypeIdentifier != 420)
             {
                 message = AddOriginalDataElement(message);
@@ -61,7 +83,7 @@ namespace ClientServerApp.Processor
             // GETTING ROUTE
     
             Console.WriteLine("Getting BIN ...");
-            string cardBIN = message.Fields[2].Value.ToString().Substring(0, 6);
+//            string cardBIN = message.Fields[2].Value.ToString().Substring(0, 6);
 
             Console.WriteLine("Getting Route ...");
             Route route = new RouteLogic().GetRouteByBIN(cardBIN);
@@ -89,7 +111,7 @@ namespace ClientServerApp.Processor
 
             {
                 Console.WriteLine("Getting Scheme ...");
-                scheme = SwitchData.GetSchemeByRoute(route);
+                scheme = SwitchData.GetSchemeByRoute(route, transactionTypeCode);
 
             }
             catch (Exception e)
@@ -128,7 +150,7 @@ namespace ClientServerApp.Processor
 
             message = SetFee(message, fees);
 
-            //NOW WE ARE DONE WITH CHECKS, WE CAN SEND
+            //BY NOW ALL CHECKS HAVE BEEN DONE , TIME TO SEND TO SINK NODE
 
             bool needReversal = false;
             Console.WriteLine("Routing To Destination ...");
@@ -170,17 +192,19 @@ namespace ClientServerApp.Processor
 
         public Iso8583Message PerformReversal(Iso8583Message message, out bool doReversal)
         {
+            Console.WriteLine("Performing Reversal ... ");
             doReversal = true;
             bool needReversal = false;
-            Console.WriteLine("Getting BIN ...");
+            
             string cardBIN = message.Fields[2].Value.ToString().Substring(0, 6);
 
-            Console.WriteLine("Getting Route ...");
+           
             Route route = new RouteLogic().GetRouteByBIN(cardBIN);
             if (route != null)
             {
                 if (route.SinkNode != null)
                 {
+                    Console.WriteLine("Routing to Sink - "+ route.SinkNode.IPAddress+":"+route.SinkNode.Port);
                     RouteToDestination(message, route.SinkNode, out needReversal);
                 }
             }
@@ -229,7 +253,7 @@ namespace ClientServerApp.Processor
 
         private Iso8583Message SetResponseMessage(Iso8583Message message, string responseCode)
         {
-            Console.WriteLine("Setting Resp Msg ...");
+            Console.WriteLine("Setting Response Message ...");
             message.SetResponseMessageTypeIdentifier();
             message.Fields.Add(39, responseCode);
             return message;

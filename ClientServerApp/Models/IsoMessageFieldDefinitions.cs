@@ -60,6 +60,10 @@ namespace SwitchConsole.Models
 
         public static int TO_ACCOUNT = 103;
 
+        public static int TERMINAL_ID = 647601;
+
+        public static string INSTITUTION_BIN = "530462";
+
         public class MTI
         {
             public static int AUTHORIZATION_REQUEST = 0100;

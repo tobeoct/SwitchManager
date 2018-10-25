@@ -60,8 +60,12 @@ namespace ClientServerApp.PeerConection
         }
         private static Iso8583Message SetResponseMessage(Iso8583Message message, string responseCode)
         {
-            Console.WriteLine("Setting Resp Msg ...");
-            message.SetResponseMessageTypeIdentifier();
+            Console.WriteLine("Setting Response Message ...");
+            if (message.IsRequest())
+            {
+                message.SetResponseMessageTypeIdentifier();
+            }
+
             message.Fields.Add(39, responseCode);
             return message;
         }
@@ -103,9 +107,8 @@ namespace ClientServerApp.PeerConection
                 }
                 else
                 {
-                    //logger.Log("Could not connect to Sink Node");
-                    //clientPeer.Close();
-                    Console.WriteLine("Client Peer is not Connected");
+                   
+                    Console.WriteLine("Client is disconnected");
                     return SetResponseMessage(message, "91");
                 }
 
@@ -123,64 +126,9 @@ namespace ClientServerApp.PeerConection
             Console.WriteLine($"Disconnected from {node.Name}");
             Console.WriteLine("Reconnecting...");
             (sender as ListenerPeer).Connect();
+            Console.WriteLine($"Reconnected to {node.Name}");
         }
 
-        //        public void StartListener(SourceNode sourceNode)
-        //        {
-        //            TcpListener tcpListener = new TcpListener(sourceNode.Port);
-        //            tcpListener.LocalInterface = sourceNode.IPAddress;
-        //            tcpListener.Start();
-        //
-        //            ListenerPeer listenerPeer = new ListenerPeer(sourceNode.Id.ToString(), new TwoBytesNboHeaderChannel
-        //                (new Iso8583Ascii1987BinaryBitmapMessageFormatter(), sourceNode.IPAddress, sourceNode.Port),
-        //                new BasicMessagesIdentifier(11, 41), tcpListener);
-        //
-        //            //logger.Log("Source :" + sourceNode.Name + " now listening at: " + sourceNode.IPAddress + " on: " + sourceNode.Port);
-        //
-        //            listenerPeer.Connected += new PeerConnectedEventHandler(ListenerPeerConnected);
-        //            listenerPeer.Receive += new PeerReceiveEventHandler(ListenerPeerReceive);
-        //            listenerPeer.Disconnected += new PeerDisconnectedEventHandler(ListenerPeerDisconnected);
-        //        }
-        //
-        //        private /*static*/ void ListenerPeerReceive(object sender, ReceiveEventArgs e)
-        //        {
-        //
-        //            ListenerPeer sourcePeer = sender as ListenerPeer;
-        //            //logger.Log("Listener Peer now Recieving....");
-        //
-        //            //Get the ISO message
-        //            Iso8583Message receivedMessage = e.Message as Iso8583Message;
-        //
-        //            new TransactionLogLogic().LogTransaction(receivedMessage);
-        //
-        //            //receivedMessage.
-        //            //string cardpan = receivedMessage.Fields[2].Value.ToString();
-        //
-        //            if (receivedMessage == null) return;
-        //
-        //            int sourceID = Convert.ToInt32(sourcePeer.Name);
-        //
-        //            Iso8583Message responseMessage = new Processor().ProcessMessage(receivedMessage, sourceID);
-        //
-        //            sourcePeer.Send(responseMessage);
-        //            sourcePeer.Close();
-        //            sourcePeer.Dispose();
-        //        }
-        //        private void ListenerPeerConnected(object sender, EventArgs e)
-        //        {
-        //            ListenerPeer listenerPeer = sender as ListenerPeer;
-        //            if (listenerPeer == null) return;
-        //            //HOW CAN LISTENER PEER BE CONNECTED TO LISTENER??? s
-        //            //logger.Log("Listener Peer connected to " + listenerPeer.Name);
-        //        }
-        //        private void ListenerPeerDisconnected(object sender, EventArgs e)
-        //        {
-        //            ListenerPeer listenerPeer = sender as ListenerPeer;
-        //            if (listenerPeer == null) return;
-        //            //logger.Log("Listener Peer disconnected from " + listenerPeer.Name);
-        //
-        //            SourceNode sourceNode = new EntityLogic<SourceNode>().GetByID(Convert.ToInt32(listenerPeer.Name));
-        //            StartListener(sourceNode);
-        //        }
+       
     }
 }

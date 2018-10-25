@@ -33,7 +33,7 @@ namespace ClientServerApp.PeerConection
             try
             {
                 server.Start();
-                Console.WriteLine("Server Started ...");
+                Console.WriteLine($"Server at {address}:{port} Started ...");
                 while (true)
                 {
                     client = server.AcceptTcpClient();
@@ -52,8 +52,9 @@ namespace ClientServerApp.PeerConection
 
                     }
 
-                    Console.WriteLine("THE MESSAGE \n" + msg.ToString());
-                    Console.WriteLine("THE LENGTH \n" + message);
+//                    Console.WriteLine("THE MESSAGE \n" + msg.ToString());
+//                    Console.WriteLine("THE LENGTH \n" + message);
+                    Console.WriteLine("Switch Data Message Recieved");
                     message = helperClassManager.Deserialize<DataMessages>(msg.ToString(), "DataMessages");
                     
                    
@@ -73,25 +74,7 @@ namespace ClientServerApp.PeerConection
 
         }
 
-        public static DataMessages Deserial(JObject jObject)
-        {
-            var dataMessages = new DataMessages();
-            var jScheme = jObject["DataMessages"]["Schemes"].ToString();
-            dataMessages.Schemes = JsonConvert.DeserializeObject<List<Scheme>>(jScheme.ToString());
-            var jSource = jObject["DataMessages"]["SourceNodes"].ToString();
-            dataMessages.SourceNodes = JsonConvert.DeserializeObject<List<SourceNode>>(jSource.ToString());
-            var jChannel =jObject["DataMessages"]["Channels"].ToString();
-            dataMessages.Channels = JsonConvert.DeserializeObject<List<Channel>>(jChannel.ToString());
-            var jRoute = jObject["DataMessages"]["Routes"].ToString();
-            dataMessages.Routes = JsonConvert.DeserializeObject<List<Route>>(jRoute.ToString());
-            var jTrx = jObject["DataMessages"]["TransactionTypes"].ToString();
-            dataMessages.TransactionTypes = JsonConvert.DeserializeObject<List<TransactionType>>(jTrx.ToString());
-            var jSink = jObject["DataMessages"]["SinkNodes"].ToString();
-            dataMessages.SinkNodes = JsonConvert.DeserializeObject<List<SinkNode>>(jSink.ToString());
-            Console.WriteLine(dataMessages.ToString());
-            return dataMessages;
-
-        }
+   
         public static void CreateEndPoint(string IPAddress, string port)
         {
             System.Net.IPEndPoint localEndPoint = null;

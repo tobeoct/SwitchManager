@@ -111,30 +111,5 @@ namespace ClientServerApp.Helper
             }
         }
 
-        private static async Task<List<SourceNode>> GetSourceNodes()
-        {
-            var instructions = new Dictionary<String, String>()
-            {
-                { "Institution Code", ConfigurationManager.AppSettings["InstitutionCode"] },
-                { "Service", ConfigurationManager.AppSettings["Service"] },
-                { "FlowId", ConfigurationManager.AppSettings["FetchSourceNodeFlow"] }
-            };
-
-            var jsonData = new
-            {
-                instruction = instructions
-            };
-
-            var content = new StringContent(JsonConvert.SerializeObject(jsonData), Encoding.UTF8, "application/json");
-
-            HttpClient httpClient = new HttpClient();
-            var res = await httpClient.PostAsync(ConfigurationManager.AppSettings["WorkFlowUrl"], content);
-            var nodes = JsonConvert.DeserializeObject<JObject>(await res.Content.ReadAsStringAsync())["EventData"]["SourceNodes"];
-
-            return JsonConvert.DeserializeObject<List<SourceNode>>(nodes.ToString());
-
-        }
-
-
     }
 }

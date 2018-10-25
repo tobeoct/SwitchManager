@@ -15,14 +15,18 @@ namespace ClientServerApp.Helper
         public static List<Route> Routes = null;
         public static List<TransactionType> TransactionTypes = null;
         public static List<SinkNode> SinkNodes = null;
-        public static Scheme GetSchemeByRoute(Route route)
+        public static Scheme GetSchemeByRoute(Route route, string transactionTypeCode)
         {
             Scheme rtnScheme = null;
             foreach (var scheme in Schemes)
             {
                 if (scheme.Route.Id == route.Id)
                 {
-                    rtnScheme = scheme;
+                    if (scheme.TransactionType.Code.Equals(transactionTypeCode))
+                    {
+                        rtnScheme = scheme;
+                    }
+                    
                 }
             }
             return rtnScheme;
